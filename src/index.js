@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 import "bootstrap/dist/css/bootstrap.css";
-import "@fortawesome/fontawesome-free";
 import { BrowserRouter } from "react-router-dom";
 import RentalSquare from "./RentalSquare";
 
