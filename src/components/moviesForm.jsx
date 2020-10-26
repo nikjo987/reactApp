@@ -3,8 +3,6 @@ import Input from "../common/input";
 import { getGenres } from "../DataProvider/genresProvider";
 import Joi from "joi-browser";
 import { getMovies, saveMovies } from "../DataProvider/moviesProvider";
-import SelectInput from "./selectInput";
-import ReactPlayer from "react-player";
 
 class MoviesForm extends Component {
   state = {
@@ -14,17 +12,17 @@ class MoviesForm extends Component {
       id: "",
       title: "",
       imdb: 0,
-      genre: "Suspence",
-      link: ""
-    },
-    errors: {}
+      genre: "",
+      rank: 0,
+      liked: 0,
+      value: 0
+    }
   };
 
-  schema = {
+  schema = new Joi.object().keys({
     id: Joi.string().required(),
 
     title: Joi.string()
-      .min(5)
       .max(150)
       .required(),
 
@@ -33,10 +31,8 @@ class MoviesForm extends Component {
     imdb: Joi.number()
       .min(0)
       .max(10)
-      .required(),
-
-    link: Joi.string().uri()
-  };
+      .required()
+  });
 
   componentDidMount() {
     const { id } = this.props.match.params;
@@ -51,115 +47,81 @@ class MoviesForm extends Component {
     const movie = this.state.movies.filter(movie => movie.id === id)[0];
     // this.props.location.push("/movies");
 
-    if (movie === undefined) return this.props.history.replace("/not-found");
+    if (movie === undefined) return this.props.location.replace("/not-found");
 
     this.setState({
-      movie: this.getModelData(movie)
+      movie: this.getModelData(movie, id)
     });
   }
 
-  getModelData = movie => {
+  getModelData = (movie, id) => {
     return {
-      id: movie.id,
+      id: id,
       title: movie.title,
       imdb: movie.imdb,
       genre: movie.genre,
-      link: movie.link,
-      rank: this.state.movies.length + 1
+      liked: false,
+      rank: 0,
+      value: 0
     };
   };
   render() {
-    const { genres, movie, errors } = this.state;
+    const { genres, movie } = this.state;
     return (
-      <div className="row">
-        <div className="col-2">
-          <form style={{ width: 350, margin: 30 }} onSubmit={this.handleSubmit}>
-            <Input
-              label="Movie Name"
-              id="title"
-              value={movie.title}
-              onChange={this.handleChange}
-              type="text"
-              errors={errors}
-            />
-            <SelectInput
-              label="Genre"
-              id="genre"
-              items={genres}
-              value={movie.genre}
-              onChange={this.handleChange}
-              errors={errors}
-            />
-            <Input
-              label="IMDb"
-              id="imdb"
-              value={movie.imdb}
-              type="number"
-              min={0}
-              step={0.1}
-              max={10}
-              onChange={this.handleChange}
-              errors={errors}
-            />
-            {this.getTrialerLink(movie)}
-            <button type="submit" className="btn btn-primary">
-              Submit
-            </button>
-          </form>
-        </div>
-        <div className="col-3"></div>
-        <ReactPlayer controls url={movie.link} />
-      </div>
+      <form style={{ width: 350, margin: 30 }} onSubmit={this.handleSubmit}>
+        <Input
+          label="Movie Name"
+          id="movieName"
+          onChange={this.handleChange}
+          value={movie.title}
+          type="text"
+        />
+        <label>Genre</label>
+        <select
+          className="form-control"
+          id="movieGenre"
+          onChange={this.handleChange}
+          value={movie.genre}
+        >
+          {genres.map(genre => (
+            <option key={genre.name}>{genre.name}</option>
+          ))}
+        </select>
+        <br />
+        <Input
+          label="IMDb"
+          id="movieIMDb"
+          onChange={this.handleChange}
+          value={movie.imdb}
+          type="number"
+          min={0}
+          step={0.1}
+          max={10}
+        />
+        <button type="submit" className="btn btn-primary">
+          Submit
+        </button>
+      </form>
     );
   }
 
-  getTrialerLink(movie) {
-    return this.props.match.params.id === "newMovie" ? (
-      <Input
-        label="Trailer Link"
-        id="link"
-        value={movie.link}
-        type="text"
-        onChange={this.handleChange}
-        errors={this.state.errors}
-      />
-    ) : null;
-  }
-
   handleChange = ({ currentTarget: input }) => {
-    const errors = { ...this.state.errors };
-    const errorMessage = this.validateProperty(input);
-    if (errorMessage) errors[input.id] = errorMessage;
-    else delete errors[input.id];
-
-    this.setState({ errors });
-
     const movie = this.state.movie;
+    console.log(input);
     movie[input.id] = input.value;
     this.setState({ movie });
   };
-
-  validateProperty({ id, value }) {
-    const obj = { [id]: value };
-    const objSchema = { [id]: this.schema[id] };
-    const { error } = Joi.validate(obj, objSchema, { abortEarly: false });
-    console.log(error);
-    return error ? error.details[0].message : null;
-  }
 
   handleSubmit = e => {
     e.preventDefault();
 
     const movie = this.state.movie;
     const result = Joi.validate(movie, this.schema);
-    if (result.error) {
-      console.log(result);
-    }
+    if (result.error) console.log(result.error);
 
     this.saveMovies();
 
     console.log("Subbmitted");
-    this.props.history.push("/movies");
   };
 
   saveMovies() {
@@ -169,13 +131,15 @@ class MoviesForm extends Component {
     const index = movies.indexOf(oldMovie);
     if (index !== -1) {
       oldMovie.title = movie.title;
-      oldMovie.genre = movie.genre;
+      oldMovie.genre = movie.movieGenre;
       oldMovie.imdb = movie.imdb;
       const moviesList = movies;
       moviesList[index] = oldMovie;
       this.setState({ movies: moviesList });
     } else {
-      const newMovie = this.getModelData(movie);
+      console.log(movie);
+      const newMovie = this.getModelData(movie, movie.id);
+      console.log(movies);
       movies.push(newMovie);
       this.setState({ movies });
     }

@@ -5,7 +5,7 @@ import Pagination from "./pagination";
 import { paginate } from "./paginate";
 import Like from "../common/like";
 import List from "../common/list";
-import Input from "../common/input";
+// import Navbar from "../common/navbar";
 import Counter from "../common/counter";
 import CustomTable from "../common/customTable";
 import { getMovies } from "../DataProvider/moviesProvider";
@@ -19,8 +19,7 @@ class Movies extends Component {
     currentPage: 1,
     currentGenre: "All Genres",
     pageSize: 5,
-    sortColumn: { column: "title", order: "asc" },
-    search: ""
+    sortColumn: { column: "title", order: "asc" }
   };
 
   render() {
@@ -88,11 +87,14 @@ class Movies extends Component {
       currentPage,
       currentGenre,
       pageSize,
-      sortColumn,
-      search
+      sortColumn
     } = this.state;
 
-    const filteredMovies = this.getFilteredMovies();
+    // Filtering movies on basis of genre
+    const filteredMovies =
+      currentGenre !== "All Genres"
+        ? movies.filter(movie => movie.genre === currentGenre)
+        : movies;
 
     // Sorting movies on basis of sort column
     const sortedMovies = _.orderBy(
@@ -121,23 +123,10 @@ class Movies extends Component {
             />
           </div>
           <div className="col-8">
-            <div className="row">
-              <div className="col-2">
-                <button className="btn btn-outline-primary btn-sm m-3">
-                  <Link to={{ pathname: `/movies/newMovie` }}>New Movie</Link>
-                </button>
-              </div>
-              <div className="col-5">
-                <Input
-                  type="text"
-                  id="search"
-                  onChange={this.handleSearchChange}
-                  value={search}
-                  placeholder="Search"
-                />
-              </div>
-            </div>
-            {/* <h4>{this.getMovieCount(filteredMovies.length)} </h4> */}
+            <button className="btn btn-outline-primary btn-sm m-2">
+              <Link to={{ pathname: `/movies/newMovie` }}>New Movie</Link>
+            </button>
+            <h4>{this.getMovieCount(filteredMovies.length)} </h4>
             <CustomTable
               caption={"Top Curated movies by R<sup>2</sup>."}
               columns={tableColumns}
@@ -157,20 +146,6 @@ class Movies extends Component {
     );
   }
 
-  getFilteredMovies() {
-    const { search, currentGenre, movies } = this.state;
-    if (search) {
-      return movies.filter(movie =>
-        _.startsWith(movie.title.toLowerCase(), search.toLowerCase(), 0)
-      );
-    } else {
-      // Filtering movies on basis of genre
-      return currentGenre !== "All Genres"
-        ? movies.filter(movie => movie.genre === currentGenre)
-        : movies;
-    }
-  }
-
   //#region Handlers
   handleTotalCount = moviesList => {
     return moviesList
@@ -185,10 +160,6 @@ class Movies extends Component {
     return count === 0
       ? "No movies left for rental"
       : `There are ${count} movie(s) left for rental!`;
-  };
-
-  handleSearchChange = ({ currentTarget: input }) => {
-    this.setState({ search: input.value });
   };
 
   handleDelete = item => {

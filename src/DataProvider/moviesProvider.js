@@ -6,8 +6,7 @@ let movies = [
     genre: "Suspence",
     liked: false,
     value: 0,
-    imdb: 9.4,
-    link: "https://www.youtube.com/watch?v=6hB3S9bIaco"
+    imdb: 9.4
   },
   {
     title: "The Godfather",
@@ -16,8 +15,7 @@ let movies = [
     genre: "Crime",
     liked: false,
     value: 0,
-    imdb: 9.3,
-    link: "https://www.youtube.com/watch?v=sY1S34973zA"
+    imdb: 9.3
   },
   {
     title: "The Godfather: Part II",
@@ -26,8 +24,7 @@ let movies = [
     genre: "Crime",
     liked: false,
     value: 0,
-    imdb: 9.2,
-    link: "https://www.youtube.com/watch?v=9O1Iy9od7-A"
+    imdb: 9.2
   },
   {
     title: "Pulp Fiction",
@@ -36,8 +33,7 @@ let movies = [
     genre: "Suspence",
     liked: false,
     value: 0,
-    imdb: 9.1,
-    link: "https://www.youtube.com/watch?v=s7EdQ4FqbhY"
+    imdb: 9.1
   },
   {
     title: "The Good, the Bad and the Ugly",
@@ -46,8 +42,7 @@ let movies = [
     genre: "Suspence",
     liked: false,
     value: 0,
-    imdb: 9.0,
-    link: "https://www.youtube.com/watch?v=WCN5JJY_wiA"
+    imdb: 9.0
   },
   {
     title: "The Dark Knight",
@@ -56,8 +51,7 @@ let movies = [
     genre: "Fiction",
     liked: true,
     value: 0,
-    imdb: 8.9,
-    link: "https://www.youtube.com/watch?v=EXeTwQWrcwY"
+    imdb: 8.9
   },
   {
     title: "12 Angry Men",
@@ -66,8 +60,7 @@ let movies = [
     genre: "Suspence",
     liked: true,
     value: 0,
-    imdb: 8.8,
-    link: "https://www.youtube.com/watch?v=_13J_9B5jEk"
+    imdb: 8.8
   },
   {
     title: "Schindler's List",
@@ -76,8 +69,7 @@ let movies = [
     genre: "Suspence",
     liked: false,
     value: 0,
-    imdb: 8.7,
-    link: "https://www.youtube.com/watch?v=gG22XNhtnoY"
+    imdb: 8.7
   },
   {
     title: "The Lord of the Rings: The Return of the King",
@@ -86,8 +78,7 @@ let movies = [
     genre: "Fiction",
     liked: false,
     value: 0,
-    imdb: 8.6,
-    link: "https://www.youtube.com/watch?v=r5X-hFf6Bwo"
+    imdb: 8.6
   },
   {
     title: "Fight Club",
@@ -96,8 +87,7 @@ let movies = [
     genre: "Suspence",
     liked: false,
     value: 0,
-    imdb: 8.5,
-    link: "https://www.youtube.com/watch?v=qtRKdVHc-cE"
+    imdb: 8.5
   }
 ];
 
